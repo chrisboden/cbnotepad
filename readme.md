@@ -1,10 +1,6 @@
-Sure! Below is a comprehensive README for your Streamlit app. This README includes all the necessary information to help others get up and running quickly.
+# CBNotepad
 
----
-
-# Gemini File Chatbot
-
-A Streamlit application that allows users to upload files, include them in prompts, and interact with the Google Gemini API to chat with their documents. The app supports placeholder processing in prompts and maintains uploaded files across sessions.
+A Streamlit application that allows users to upload files, include them in prompts, and interact with the Google Gemini API to chat with their documents. The app supports placeholder processing in prompts and maintains uploaded files across sessions. It makes use of Gemini's 1m token context windows and its ability to work with complex file types, natively, without having to parse them to text.
 
 ## Table of Contents
 
