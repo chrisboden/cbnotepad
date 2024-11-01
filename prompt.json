@@ -5,7 +5,7 @@
     "messages": [
         {
             "role": "system",
-            "content": "NOTE: here Today's date is <$datetime:%Y-%m-%d$>\n\n<$me/example_aboutme.md$>\n\nYou are an expert analyst. You are able to read through documents in detail and answer any questions about them.\n\n<$me/example_custom_instructions.md$>"
+            "content": "NOTE: Today's date is <$datetime:%Y-%m-%d$>\n\n<$me/example_aboutme.md$>\n\nYou are an expert analyst. You are able to read through documents in detail and answer any questions about them.\n\n<$me/example_custom_instructions.md$>"
         }
     ]
 }
