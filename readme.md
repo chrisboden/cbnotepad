@@ -45,28 +45,12 @@ A Streamlit application that allows users to upload files, include them in promp
 
 2. **Create a Virtual Environment and Install Dependencies**
 
-   You can use `pipenv` or `pip` for dependency management.
+   You can use `pip` for dependency management.
 
-   - Using `pipenv`:
-
-     ```bash
-     pipenv install
-     pipenv shell
-     ```
-
-   - Using `pip`:
 
      ```bash
-     python -m venv venv
-     source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
      pip install -r requirements.txt
      ```
-
-3. **Copy the Environment Variables Template**
-
-   ```bash
-   cp .env_copy .env
-   ```
 
 ## Getting a Google Gemini API Key
 
@@ -82,9 +66,7 @@ A Streamlit application that allows users to upload files, include them in promp
 
 3. **Obtain an API Key**
 
-   - In the Cloud Console, go to **APIs & Services** > **Credentials**.
-   - Click **Create Credentials** > **API Key**.
-   - Copy the API key.
+   - Get your api key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ## Setting Up the Environment Variables
 
@@ -140,12 +122,13 @@ This will start the app on `http://localhost:8501/`. Open this URL in your web b
 - **`.env_copy`**: A template for the environment variables file. Rename to `.env` and add your gemini api key
 - **`requirements.txt`**: A list of Python dependencies required to run the app.
 - **`README.md`**: Documentation and instructions for the app.
-- **`me/aboutme.md`**: An example file that can be included in prompts using placeholders.
+- **`me/example_aboutme.md`**: An example file that can be included in prompts using placeholders.
 
 ## Customization
 
 ### Modifying the Prompt Configuration
 
+You can do your prompt engineering in the system instructions in the prompt.json file. It includes the ability to 'include' or pull in content from other files to build out your prompt, eg custom instructions, about me, etc
 - **Edit `prompt.json`** to adjust the model parameters and system prompts.
 - **Placeholders**:
   - Include files in the prompt using `<$path/to/file$>`.
@@ -158,9 +141,9 @@ This will start the app on `http://localhost:8501/`. Open this URL in your web b
 
 ### Adjusting Model Parameters
 
-- **Model Name**: Change the `"model"` field in `prompt.json` to use a different Gemini model.
-- **Temperature**: Adjust the `"temperature"` field to control the randomness of the model's output.
-- **Max Tokens**: Set the `"max_tokens"` field to control the maximum length of the generated response.
+- **Model Name**: You can change the `"model"` field in `prompt.json` to use a different Gemini model.
+- **Temperature**: Optional: djust the `"temperature"` field to control the randomness of the model's output.
+- **Max Tokens**: Optional: et the `"max_tokens"` field to control the maximum length of the generated response.
 
 ## Troubleshooting
 
