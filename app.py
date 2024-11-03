@@ -14,52 +14,86 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 def clear_chat_history():
     st.session_state.messages = []
 
-def user_input(user_question):
-    selected_files = [file_info["gemini_file"] for file_info in st.session_state.uploaded_files if file_info["selected"]]
 
-    # Load and process the prompt configuration
+def user_input(user_question):
+    # Get selected files
+    selected_files = [file_info["gemini_file"] for file_info in st.session_state.uploaded_files if file_info["selected"]]
+    print("\n=== Selected Files ===")
+    print(f"Number of files selected: {len(selected_files)}")
+    for file in selected_files:
+        print(f"File: {file.display_name}")
+
+    # Load prompt configuration
     with open('prompt.json', 'r') as f:
         prompt_config = json.load(f)
 
-    # Prepare conversation history
-    conversation_history = st.session_state.messages[:-1]  # Exclude the latest user message
-    conversation_history.append({"role": "user", "content": user_question})
-
-    # Process placeholders in the prompt
-    messages = load_prompt(prompt_config, conversation_history)
-
-    # Create the model parameters
+    # Get model parameters
     model_name = prompt_config.get("model", "gemini-1.5-flash-8b")
     temperature = prompt_config.get("temperature", 0.7)
     max_tokens = prompt_config.get("max_tokens", 8092)
 
-    # Concatenate messages into a single prompt string
-    prompt = ''
-    for msg in messages:
-        if msg['role'] == 'system':
-            prompt += f"{msg['content']}\n"
-        else:
-            prompt += f"{msg['role']}: {msg['content']}\n"
+    print("\n=== Model Configuration ===")
+    print(f"Model: {model_name}")
+    print(f"Temperature: {temperature}")
+    print(f"Max tokens: {max_tokens}")
 
-    # Prepare the inputs for the API call
-    inputs = [prompt] + selected_files
-
-    # Instantiate the model
-    model = genai.GenerativeModel(model_name=model_name)
-
-    # Create the generation configuration
+    # Create generation config
     generation_config = types.GenerationConfig(
         temperature=temperature,
         max_output_tokens=max_tokens,
     )
 
-    # Call generate_content with the generation_config
-    response = model.generate_content(
-        inputs,
+    # Instantiate the model
+    model = genai.GenerativeModel(model_name=model_name)
+
+    # Prepare the current message parts (files + question)
+    current_parts = selected_files + [user_question]
+    print("\n=== Current Message Parts ===")
+    print("Parts structure:")
+    for i, part in enumerate(current_parts):
+        if hasattr(part, 'display_name'):  # If it's a file
+            print(f"Part {i}: File - {part.display_name}")
+        else:  # If it's the question
+            print(f"Part {i}: Text - {part}")
+
+    # Convert existing conversation history to Gemini's format
+    history = []
+    for msg in st.session_state.messages:
+        if msg["role"] == "user":
+            history.append({
+                "role": "user",
+                "parts": [msg["content"]]
+            })
+        elif msg["role"] == "assistant":
+            history.append({
+                "role": "model",
+                "parts": [msg["content"]]
+            })
+
+    print("\n=== Conversation History Format ===")
+    print(json.dumps(history, indent=2, default=str))
+
+    print("\n=== Current Message Format ===")
+    current_message = {
+        "role": "user",
+        "parts": current_parts
+    }
+    print(json.dumps(current_message, indent=2, default=str))
+
+    # Start chat with history
+    chat = model.start_chat(history=history)
+
+    # Send message with files and question
+    response = chat.send_message(
+        current_parts,
         generation_config=generation_config
     )
 
+    print("\n=== Response Received ===")
+    print(f"Response text length: {len(response.text)}")
+
     return response
+
 
 def main():
     st.set_page_config(
